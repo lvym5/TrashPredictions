@@ -56,7 +56,7 @@ import plotly.express as px
 
 # Define parameters
 sensor_ids = range(2, 11)  # IDs from 2 to 10
-num_rows_per_sensor = 100000  # Adjust this to get a total of ~2000 rows
+num_rows_per_sensor = 10000  # Adjust this to get a total of ~2000 rows
 timestamps = pd.date_range(start="2022-01-01", periods=num_rows_per_sensor, freq="15min")
 
 # Function to adjust values based on meal times
