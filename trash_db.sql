@@ -1,6 +1,3 @@
-CREATE DATABASE trash_db;
-
-CREATE SCHEMA trash;
 
 CREATE TABLE trash.cans(
     id SERIAL PRIMARY KEY,
@@ -16,13 +13,12 @@ CREATE TABLE trash.data(
     sensor_id INT,
     transaction_id SERIAL,
     PRIMARY KEY (sensor_id, transaction_id),
-    
     created_at TIMESTAMP DEFAULT NOW(),
     value INT,
     depth INT,
+    percent_full NUMERIC GENERATED ALWAYS AS ((depth - value)::NUMERIC  / (depth+1)) STORED,
     battery_level INT,
     signal_strength INT,
-
     FOREIGN KEY (sensor_id) REFERENCES trash.cans(id) ON DELETE CASCADE
     );
     
@@ -37,9 +33,9 @@ FROM generate_series(1, 100);
 
 INSERT INTO trash.data (sensor_id, value, depth, battery_level, signal_strength) 
 SELECT
-	((random() * 199)::INT+1) AS sensor_id,
-	(random() * 100)::INT AS value,
-	(random() * 100)::INT AS depth,
+	((random() * 99)::INT+1) AS sensor_id,
+	(random() * 30)::INT AS value,
+	((random() * 70)+30)::INT AS depth,
 	(random() * 100)::INT AS battery_level,
 	(random() * 100)::INT AS signal_strength
 FROM generate_series(1,100);
