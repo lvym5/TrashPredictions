@@ -1,20 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const SENSOR_META = {
-    96: { building: "Hekman Library", floor: "3rd Floor" },
-    55: { building: "Science Hall", floor: "1st Floor" },
-    29: { building: "Commons Hall", floor: "Basement" },
-    21: { building: "Dining Center", floor: "2nd Floor" },
-    64: { building: "Hekman Library", floor: "2nd Floor" },
-    57: { building: "Commons Hall", floor: "3rd Floor" },
-    99: { building: "Science Hall", floor: "Basement" },
-    91: { building: "Dining Center", floor: "3rd Floor" },
-    // Add more mappings as needed
-};
-
-const getSensorLocation = (id) => SENSOR_META[id] || { building: "Unknown", floor: "-" };
-
 const getRoundedPercent = (can) => Math.ceil(parseFloat(can.percent_full) * 100);
 
 const getColor = (percent) => {
@@ -31,31 +17,39 @@ export default function Trashlist() {
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await axios.get(
-                "https://vmya5xaguym4xlqfqhethh75wa0hnkrq.lambda-url.us-east-2.on.aws/data/"
-            );
-            setTrashData(res.data);
+            try {
+                const [sensorRes, locRes] = await Promise.all([
+                    axios.get("https://vmya5xaguym4xlqfqhethh75wa0hnkrq.lambda-url.us-east-2.on.aws/data/latest/"),
+                    axios.get("https://vmya5xaguym4xlqfqhethh75wa0hnkrq.lambda-url.us-east-2.on.aws/")
+                ]);
+
+                // Merge sensor and location data by index.
+                const merged = sensorRes.data.map((sensor) => {
+                    const loc = locRes.data.find((loc) => loc.id === sensor.sensor_id);
+                    return loc ? { ...loc, ...sensor } : null;
+                }).filter(item => item !== null);
+                
+                setTrashData(merged);
+                console.log(trashData);
+            } catch (err) {
+                console.error("Error fetching data:", err);
+            }
         };
         fetchData();
     }, []);
 
     const filteredData = trashData.filter((can) => {
-        const location = getSensorLocation(can.sensor_id);
         const percent = getRoundedPercent(can);
-        const buildingMatch = filterBuilding === "All" || location.building === filterBuilding;
+        const buildingMatch = filterBuilding === "All" || can.building === filterBuilding;
         const valueMatch = filterValue === "" || percent >= parseFloat(filterValue);
         return buildingMatch && valueMatch;
     });
 
     const sortedData = [...filteredData].sort((a, b) =>
-        sortDesc
-            ? getRoundedPercent(b) - getRoundedPercent(a)
-            : getRoundedPercent(a) - getRoundedPercent(b)
+        sortDesc ? getRoundedPercent(b) - getRoundedPercent(a) : getRoundedPercent(a) - getRoundedPercent(b)
     );
 
-    const uniqueBuildings = Array.from(
-        new Set(trashData.map((can) => getSensorLocation(can.sensor_id).building))
-    );
+    const uniqueBuildings = Array.from(new Set(trashData.map((can) => can.building)));
 
     return (
         <div className="p-6">
@@ -66,7 +60,7 @@ export default function Trashlist() {
                         onClick={() => setSortDesc((prev) => !prev)}
                         className="font-tenor px-4 py-2 bg-[#03D069] text-white rounded hover:bg-emerald-700 shadow"
                     >
-                        Sort by Value {sortDesc ? "↓" : "↑"}
+                        Sort by Fullness {sortDesc ? "↓" : "↑"}
                     </button>
                     <div className="flex items-center">
                         <label className="font-tenor mr-2" htmlFor="buildingFilter">
@@ -88,7 +82,7 @@ export default function Trashlist() {
                     </div>
                     <div className="flex items-center">
                         <label htmlFor="valueFilter" className="font-tenor mr-2">
-                            Min Value (%):
+                            Min Fullness (%):
                         </label>
                         <input
                             id="valueFilter"
@@ -107,7 +101,7 @@ export default function Trashlist() {
                     <thead className="bg-gray-100 text-gray-600 font-semibold">
                         <tr>
                             <th className="font-tenor px-4 py-2">Sensor ID</th>
-                            <th className="font-tenor px-4 py-2">Value (%)</th>
+                            <th className="font-tenor px-4 py-2">Fullness (%)</th>
                             <th className="font-tenor px-4 py-2">Battery</th>
                             <th className="font-tenor px-4 py-2">Signal</th>
                             <th className="font-tenor px-4 py-2">Building</th>
@@ -117,24 +111,24 @@ export default function Trashlist() {
                     </thead>
                     <tbody>
                         {sortedData.map((can) => {
-                            const location = getSensorLocation(can.sensor_id);
                             const percent = getRoundedPercent(can);
                             return (
                                 <tr key={can.transaction_id} className="border-t hover:bg-gray-50">
                                     <td className="px-4 py-2 text-center">{can.sensor_id}</td>
                                     <td className="px-4 py-2 text-center">
-                                        <span
-                                            className={`inline-block w-4 h-4 rounded-full mr-2 ${getColor(percent)}`}
-                                        ></span>
+                                        <span className={`inline-block w-4 h-4 rounded-full mr-2 ${getColor(percent)}`} />
                                         {percent}%
                                     </td>
                                     <td className="px-4 py-2 text-center">{can.battery_level}%</td>
-                                    <td className="px-4 py-2 text-center">{can.signal_strength}</td>
-                                    <td className="px-4 py-2 text-center">{location.building}</td>
-                                    <td className="px-4 py-2 text-center">{location.floor}</td>
+                                    <td className="px-4 py-2 text-center">{trashData.signal_strength}</td>
+                                    <td className="px-4 py-2 text-center">{can.building}</td>
+                                    <td className="px-4 py-2 text-center">{can.floor_number}</td>
                                     <td className="px-4 py-2 text-sm text-gray-500">
+
                                         {new Date(can.created_at).toLocaleString()}
+
                                     </td>
+                                    <p> {trashData.signal_strength} </p>
                                 </tr>
                             );
                         })}
