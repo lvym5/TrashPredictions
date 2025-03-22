@@ -1,0 +1,35 @@
+menu "TrashPredictions Config"
+    config WIFI_EAP
+        bool "Whether to use enterprise WiFi or not."
+        default y
+
+    config WIFI_SSID
+        string "SSID for WiFi connection"
+        default ""
+    
+    config WIFI_ID
+        depends on WIFI_EAP
+        string "EAP ID for WiFi connection"
+        default ""
+    
+    config WIFI_USER
+        depends on WIFI_EAP
+        string "Username for WiFi connection"
+        default ""
+
+    config WIFI_PASS
+        string "Password for WiFi connection"
+        default ""
+
+    config WIFI_RETRYS
+        int "Number of retries for WiFi connection"
+        default 5
+    
+    config REPORT_ENDPOINT
+        string "Endpoint to which to report data"
+        default ""
+    
+    config SENSOR_ID
+        string "ID of the sensor"
+        default "0"
+endmenu
