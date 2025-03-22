@@ -13,9 +13,6 @@ static const int CONNECTED_BIT = BIT0;
 static void wifiEventHandler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data) {
     static uint_least8_t retryCount = 0;
 
-    // Check heap integrity before handling the event
-    heap_caps_check_integrity_all(true);
-
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         esp_wifi_connect();
     } else if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
@@ -32,9 +29,6 @@ static void wifiEventHandler(void* arg, esp_event_base_t event_base, int32_t eve
         }
         xEventGroupClearBits(wifi_event_group, CONNECTED_BIT);
     }
-
-    // Check heap integrity after handling the event
-    heap_caps_check_integrity_all(true);
 }
 
 bool wifiConnected(void) {

@@ -1,4 +1,5 @@
 ca_cert.pem
+sdkconfig*
 
 .config
 *.o
