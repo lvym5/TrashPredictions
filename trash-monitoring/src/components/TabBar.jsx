@@ -11,7 +11,7 @@ export default function TabBar({ activeTab, onTabChange }) {
           <button
             key={tab}
             onClick={() => onTabChange(tab)}
-            className={`px-4 py-2 rounded-mid text-sm font-semibold transition-all duration-200 ${
+            className={`font-bold font-tenor px-4 py-2 rounded-mid text-sm font-semibold transition-all duration-200 ${
               activeTab === tab
                 ? 'bg-cyan-500 text-white shadow'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'

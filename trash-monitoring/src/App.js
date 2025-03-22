@@ -8,8 +8,9 @@ export default function App() {
   const [selectedFloor, setSelectedFloor] = useState('');
 
   const buildingData = {
-    'Hekman Library': ['3rd Floor', '4th Floor', '5th Floor'],
+    'Hekman Library': ['2nd Floor','3rd Floor', '4th Floor', '5th Floor'],
     'Science Building': ['Ground Floor', '1st Floor', '2nd Floor'],
+    'CFAC': ['1st Floor']
   };
 
   const buildings = Object.keys(buildingData);
