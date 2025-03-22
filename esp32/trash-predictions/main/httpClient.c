@@ -1,5 +1,6 @@
 #include "trashPredictions.h"
 #include "httpClient.h"
+#include <ezWifi.h>
 #include <esp_http_client.h>
 #include <esp_tls.h>
 #include <esp_log.h>
@@ -117,7 +118,7 @@ void contactReportEndpoint(uint32_t* data) {
     /* generate POST payload */
     char post_data[1 << 9];
     sprintf(post_data, "{\"sensor_id\":\"%s\", \"value\":\"%ld\", \"battery_level\":\"%d\", \"signal_strength\":\"%d\", \"depth\":\"%d\"}",
-            SENSOR_ID, *data, 100, -97, 0);
+            SENSOR_ID, *data, 100, getSignalStrength(), TRASH_CAN_DEPTH);
     esp_http_client_set_post_field(client, post_data, strlen(post_data));
     
     esp_err_t err = esp_http_client_perform(client);

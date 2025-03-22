@@ -1,6 +1,6 @@
 #include "trashPredictions.h"
-#include "wifi.h"
 #include "httpClient.h"
+#include <ezWifi.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include <freertos/FreeRTOS.h>

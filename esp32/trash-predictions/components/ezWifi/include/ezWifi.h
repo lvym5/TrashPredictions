@@ -1,8 +1,9 @@
-#ifndef WIFI_HEADER_GUARD
-#define WIFI_HEADER_GUARD
+#ifndef EZ_WIFI_HEADER_GUARD
+#define EZ_WIFI_HEADER_GUARD
 
 #include <sdkconfig.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #define WIFI_SSID     CONFIG_WIFI_SSID
 #define WIFI_ID       CONFIG_WIFI_ID
@@ -12,5 +13,6 @@
 
 void wifiStart(void);
 bool wifiConnected(void);
+uint8_t getSignalStrength(void);
 
 #endif

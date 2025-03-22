@@ -1,11 +1,12 @@
-#include "trashPredictions.h"
-#include "wifi.h"
+#include <ezWifi.h>
 #include <string.h>
 #include <esp_wifi.h>
 #include <esp_eap_client.h>
 #include <freertos/event_groups.h>
 #include <esp_log.h>
 #include <nvs_flash.h>
+
+static const char* TAG = "ezWifi";
 
 static EventGroupHandle_t wifi_event_group;
 static const int CONNECTED_BIT = BIT0;
@@ -34,6 +35,15 @@ static void wifiEventHandler(void* arg, esp_event_base_t event_base, int32_t eve
 bool wifiConnected(void) {
     // check if connected
     return CONNECTED_BIT & xEventGroupGetBits(wifi_event_group);
+}
+
+uint8_t getSignalStrength(void) {
+    if (!wifiConnected())
+        return 0;
+        
+    wifi_ap_record_t ap_info;
+    esp_wifi_sta_get_ap_info(&ap_info);
+    return ap_info.rssi;
 }
 
 void wifiStart(void) {
