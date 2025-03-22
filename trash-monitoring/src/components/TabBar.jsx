@@ -2,7 +2,7 @@
 import React from 'react';
 
 export default function TabBar({ activeTab, onTabChange }) {
-  const tabs = ['Map', 'Visualizations', 'Charts', 'Data'];
+  const tabs = ['Map', 'Trash List', 'Analytics', 'About'];
 
   return (
     <div className="bg-gray-50 px-4 py-2 border-b border-gray-200">

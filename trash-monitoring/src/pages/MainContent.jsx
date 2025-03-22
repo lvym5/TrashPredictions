@@ -1,5 +1,9 @@
 import React from 'react';
 import TabBar from '../components/TabBar';
+import Analytics from './Analytics';
+import Trashlist from './Trashlist';
+import About from './About';
+
 import MapView from './Map';
 
 export default function MainContent({
@@ -32,22 +36,18 @@ export default function MainContent({
           />
         )}
 
-        {activeTab === 'Visualizations' && (
-          <div className="flex-1 flex items-center justify-center text-gray-700">
-            <h2 className="text-xl font-semibold">📊 Visualizations coming soon!</h2>
-          </div>
+        {activeTab === 'Trash List' && (
+          <Trashlist
+          />
         )}
 
-        {activeTab === 'Charts' && (
-          <div className="flex-1 flex items-center justify-center text-gray-700">
-            <h2 className="text-xl font-semibold">📈 Charts go here!</h2>
-          </div>
+        {activeTab === 'Analytics' && (
+          <Analytics
+          />
         )}
 
-        {activeTab === 'Data' && (
-          <div className="flex-1 flex items-center justify-center text-gray-700">
-            <h2 className="text-xl font-semibold">📂 Raw data viewer (WIP)</h2>
-          </div>
+        {activeTab === 'About' && (
+          <About />
         )}
       </div>
     </div>

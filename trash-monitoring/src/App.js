@@ -9,7 +9,6 @@ export default function App() {
 
   const buildingData = {
     'Hekman Library': ['3rd Floor', '4th Floor', '5th Floor'],
-    'Commons Hall': ['1st Floor', '2nd Floor'],
     'Science Building': ['Ground Floor', '1st Floor', '2nd Floor'],
   };
 
